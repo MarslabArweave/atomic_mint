@@ -113,7 +113,7 @@ export const Mint = (props) => {
             placeholder='e.g. 55000000'
           />
           <TextInput 
-            title='Mint price:'
+            title='Mint price($AR):'
             tip='When tokens are minted, fee in $AR will send to your wallet.'
             onChange={setMintPrice}
             placeholder='e.g. 0.01'
@@ -121,8 +121,8 @@ export const Mint = (props) => {
         </>
       }
       <TextInput 
-        title='Donate:'
-        tip='Donation will be transferred to $WMINT holders. Donation will support WeaveMint to keep it constantly updated. Metric in $AR.'
+        title='Donate($AR):'
+        tip='Donation will be transferred to $WMINT holders. Donation will support WeaveMint to keep it constantly updated.'
         onChange={setDonate}
         placeholder='e.g. 0.1'
         default='0.1'
