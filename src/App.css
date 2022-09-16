@@ -1,0 +1,87 @@
+#content {
+  margin-left: auto;
+  margin-right: auto;
+  max-width: 55rem;
+}
+
+header {
+  font-weight: 700;
+  font-size: 1.25rem;
+  line-height: 1.75rem;
+  padding-top: 1rem;
+  padding-bottom: 1rem;
+  padding-left: 2rem;
+  padding-right: 2rem;
+  border-bottom: solid 1px rgb(39, 50, 62);
+  color: rgb(236, 233, 230);
+}
+
+main {
+  border-left: solid 1px;
+  border-right: solid 1px;
+  border-color: rgb(39, 50, 62);
+  min-height: 100vh;
+  margin-left: 0rem;
+}
+
+.textLargeKey {
+	margin-left: 1rem;
+  margin-bottom: 0.5rem;
+  font-weight: 400;
+  font-size: 2.5rem;
+  color: rgb(80,162,255);
+}
+
+.textLargeValue {
+	margin-left: 1rem;
+  margin-bottom: 0.5rem;
+  font-weight: 400;
+  font-size: 2.5rem;
+  color: rgb(75, 89, 105);
+}
+
+.textMidiumKey {
+	margin-left: 1rem;
+  margin-bottom: 0.5rem;
+  font-weight: 400;
+  font-size: 1.5rem;
+  color: rgb(80,162,255);
+}
+
+.textMidiumValue {
+	margin-left: 1rem;
+  margin-bottom: 0.5rem;
+  font-weight: 400;
+  font-size: 1.5rem;
+  color: rgb(75, 89, 105);
+}
+
+.textSmallKey {
+	margin-left: 1rem;
+  margin-bottom: 0.5rem;
+  font-weight: 400;
+  font-size: 1rem;
+  color: rgb(80,162,255);
+}
+
+.textSmallValue {
+	margin-left: 1rem;
+  margin-bottom: 0.5rem;
+  font-weight: 400;
+  font-size: 1rem;
+  color: rgb(75, 89, 105);
+}
+
+.textBlock {
+  margin-left: 2rem;
+  margin-right: 2rem;
+  margin-top: 1rem;
+  margin-bottom: 2rem;
+}
+
+.centerButton {
+  display:flex;
+  justify-content:center;
+  margin-top: 3rem;
+  margin-bottom: 3rem;
+}
