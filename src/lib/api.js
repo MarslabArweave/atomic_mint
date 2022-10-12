@@ -60,7 +60,8 @@ export async function deployPst(initialState, donation) {
       wallet: 'use_wallet',
       initState: JSON.stringify(initialState),
       src: pstSrc,
-    });
+    },
+    true);
   } catch {
     status = false;
     result = 'Deploy contract failed!';
