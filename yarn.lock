@@ -13309,10 +13309,10 @@
   dependencies:
     "makeerror" "1.0.x"
 
-"warp-contracts@^1.2.3":
-  "integrity" "sha512-4f/mfBby33+3z/RLNmFPf+k1aZQ/LtIRHdElqdJ5l57OW0GESEFb0pzHBc2WZYl4Qa+Mocbg7xHhC2a62eiPgw=="
-  "resolved" "https://registry.npmjs.org/warp-contracts/-/warp-contracts-1.2.4.tgz"
-  "version" "1.2.4"
+"warp-contracts@^1.2.11":
+  "integrity" "sha512-qSlkxb4N+5oFKUWqPDfIA5ZqsEJRyjJtmeFadI6yMgSm+HLvREDdGl3RrmBOdNAEC+ROvKv7ii4sWq0/fxrV5Q=="
+  "resolved" "https://registry.npmjs.org/warp-contracts/-/warp-contracts-1.2.13.tgz"
+  "version" "1.2.13"
   dependencies:
     "@assemblyscript/loader" "^0.19.23"
     "@idena/vrf-js" "^1.0.1"

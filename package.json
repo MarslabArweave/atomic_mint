@@ -76,7 +76,7 @@
     "ts-pnp": "1.2.0",
     "typescript": "4.5.2",
     "url-loader": "4.1.1",
-    "warp-contracts": "^1.2.3",
+    "warp-contracts": "^1.2.11",
     "web-vitals": "^1.0.1",
     "webpack": "4.44.2",
     "webpack-dev-server": "3.11.1",

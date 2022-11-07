@@ -2,11 +2,11 @@
 
 WeaveMint is a fully-onchain DApp developed by mARsLab. 
 
-With WeaveMint, you can easily deploy standard & different type of Profit Sharing Token(PST) on Arweave chain with several clicks.
+With WeaveMint, you can easily deploy standard WRC tokens on Arweave chain with several clicks.
 
 No coding skills are required.
 
-See DApp on Arweave mainnet [here](https://rqyysjcyt5woo7a5svrwyqxw2hz3joj6ioqpkflefavxsuo7t5bq.arweave.net/jDGJJFifbOd8HZVjbEL20fO0uT5DoPUVZCgreVHfn0M/).
+See DApp on Arweave mainnet [here](https://arweave.net/5llpCw0FuRUEjTCys0C_iP8icWAm2TmJYjh4tKTjTo8).
 
 # Contact us
 

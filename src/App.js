@@ -1,8 +1,10 @@
 import './App.css';
 
 import React from 'react';
-import { Routes, Route } from 'react-router-dom';
-import { Mint } from './components/mint';
+import { Routes, Route, useNavigate } from 'react-router-dom';
+import { MintToken } from './components/mintToken';
+import { MintNFT } from './components/mintNFT';
+import { SubmitButton } from './components/SubmitButton/SubmitButton';
 
 const App = () => {
   return (
@@ -11,6 +13,8 @@ const App = () => {
         <main>
           <Routes>
             <Route path="/" name="" element={<Home />} />
+            <Route path="/token" name="" element={<Token />} />
+            <Route path="/nft" name="" element={<NFT />} />
           </Routes>
         </main>
       </div>
@@ -19,11 +23,40 @@ const App = () => {
 };
 
 const Home = (props) => {
-
+  const navigate = useNavigate();
   return (
     <>
       <header>WeaveMint</header>
-      <Mint />
+      <SubmitButton 
+        buttonText='Mint Token'
+        submitTask={async ()=>{navigate(`/token`);return {status: true, result: ''}}}
+        buttonSize='Large'
+      />
+      <SubmitButton
+        buttonText='Mint NFT'
+        submitTask={async ()=>{navigate(`/nft`);return {status: true, result: ''}}}
+        buttonSize='Large'
+      />
+    </>
+  );
+};
+
+const NFT = (props) => {
+  
+  return (
+    <>
+      <header>WeaveMint-NFT</header>
+      <MintNFT />
+    </>
+  );
+};
+
+const Token = (props) => {
+  
+  return (
+    <>
+      <header>WeaveMint-Token</header>
+      <MintToken />
     </>
   );
 };
