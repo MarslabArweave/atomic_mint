@@ -1,0 +1,57 @@
+.title {
+	margin-left: 1rem;
+  font-weight: 400;
+  font-size: 1.2rem;
+  color: rgb(80,162,255);
+}
+
+.tip {
+	margin-left: 1rem;
+  font-weight: 400;
+  font-size: 1rem;
+  color: rgb(75, 89, 105);
+}
+
+.fileDescription {
+	margin-left: 1rem;
+  margin-bottom: 1.5rem;
+  font-weight: 500;
+  font-size: 1rem;
+  color: rgb(75, 89, 105);
+}
+
+.textDiv {
+  margin-top: 2.5rem;
+  margin-bottom: 2.5rem;
+  margin-left: 2rem;
+  margin-right: 3rem;
+}
+
+.file {
+  position: relative;
+  display: inline-block;
+  border-radius: 99999px;
+	padding: 0.5rem;
+  margin-top: 0.75rem;
+  margin-left: 1rem;
+  margin-right: 1rem;
+	background-color: rgb(80, 162, 255);
+	color: rgb(27, 39, 51);;
+  overflow: hidden;
+  color: rgb(75, 89, 105);
+  text-decoration: none;
+  text-indent: 0;
+  line-height: 20px;
+  width: 7rem;
+  font-size: 14px;
+	font-weight: 600;
+	text-align: center;
+}
+.file input {
+  cursor: pointer;
+  position: absolute;
+  font-size: 100px;
+  right: 0;
+  top: 0;
+  opacity: 0;
+}

@@ -4,7 +4,7 @@ import Select from 'react-select';
 
 /*
  * @props title: string.
- * @props tip: string.
+ * @props tip: string | DOM.
  * @props options: object. format like: [{value: 'foo', label: 'bar'}, ...]
  * @props onChange: function(string).
 */
@@ -25,7 +25,7 @@ export const Selector = (props) => {
         options={props.options}
         onChange={e => onTextChange(e)}
       />
-      <div className='tip'> ❕{props.tip} </div>
+      <div className='tip'> {props.tip} </div>
     </div>
   );
 }

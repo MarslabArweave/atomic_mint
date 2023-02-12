@@ -3,6 +3,8 @@ import { ArweaveWebWallet } from 'arweave-wallet-connector';
 import "./walletSelectButton.css";
 import arconnectLogo from './arconnect-logo.svg';
 import arweaveLogo from './arweave-ar-logo.svg';
+import mathWalletLogo from './mathwallet-logo.png';
+import { connectWallet } from '../../lib/api';
 
 const webWallet = new ArweaveWebWallet({
   name: 'jARdge System',
@@ -10,6 +12,7 @@ const webWallet = new ArweaveWebWallet({
 
 const NONE = "None";
 const AR_CONNECT = "ArConnect";
+const MATH_WALLET = "mathwallet";
 const ARWEAVE_APP = "ArweaveApp";
 
 export const WalletSelectButton = (props) => {
@@ -23,6 +26,7 @@ export const WalletSelectButton = (props) => {
       const firstFive = address.substring(0,5);
       const lastFour = address.substring(address.length-4);
       setAddressText(`${firstFive}..${lastFour }`);
+      await connectWallet('use_wallet');
       props.setIsConnected(true);
     }
     setActiveWallet(walletName);
@@ -52,6 +56,11 @@ const WalletButton = (props) => {
           <img src={arconnectLogo} alt="wallet icon" />
           <p>{props.walletAddress}</p>
         </div>)
+    case MATH_WALLET:
+      return (<div className="walletButton" >
+          <img src={mathWalletLogo} alt="wallet icon" />
+          <p>{props.walletAddress}</p>
+        </div>)
     case ARWEAVE_APP:
       return (<div className="walletButton altFill" >
           <img src={arweaveLogo} alt="wallet icon" />
@@ -68,6 +77,7 @@ const WalletModal = (props) => {
   async function connectWallet(walletName) {
     switch(walletName) {
       case AR_CONNECT:
+      case MATH_WALLET:
         await window.arweaveWallet.connect(['ACCESS_ADDRESS','SIGN_TRANSACTION','DISPATCH']);
         break;
       case ARWEAVE_APP:
@@ -94,6 +104,10 @@ const WalletModal = (props) => {
           <button className="select-button" onClick={() => connectWallet(AR_CONNECT)}>
             <p>ArConnect</p>
             <img src={arconnectLogo} alt="ArConnect icon"/>
+          </button>
+          <button className="select-button" onClick={() => connectWallet(MATH_WALLET)}>
+            <p>MathWallet</p>
+            <img src={mathWalletLogo} alt="MathWallet icon"/>
           </button>
           <button className="select-button" onClick={() => connectWallet(ARWEAVE_APP)}>
             <p>Arweave.app</p>

@@ -6,15 +6,16 @@
   display: flex;
   align-items: center;
   font-family: 'DM Sans', 'Roboto', 'Helvetica Neue', Helvetica, Arial, sans-serif;
-  font-size: 14px;
-  font-weight: 600;
+  font-size: 15px;
+  font-weight: 500;
   height: 40px;
-  line-height: 40px;
+  line-height: 60px;
 	border-radius: 9999px;
 	border: solid 1px;
 	color: rgb(236, 233, 230);
-	margin-top: 0rem;
-  width: 10rem;
+	margin-top: 0.5rem;
+  margin-right: 3rem;
+  width: 90%;
 	justify-content: center !important;
 }
 
