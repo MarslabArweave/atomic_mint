@@ -1,4 +1,5 @@
 import React from 'react';
+import { Input } from 'rsuite';
 import "./FileUploader.css";
 
 /*
@@ -9,25 +10,30 @@ import "./FileUploader.css";
 export const FileUploader = (props) => {
   const [file, setFile] = React.useState();
 
-  function onFileChange(event) {
-    props.onChange(event.target.files[0]);
-    setFile(event.target.files[0]);
+  React.useEffect(()=>{
+    setFile(props.value);
+  }, [props.value]);
+
+  const onFileChange = async (event) => {
+    const file = event.target.files[0];
+    file.data = await file.arrayBuffer();
+    props.onChange(file);
+    setFile(file);
   }
 
   return (
-    <div className='textDiv'>
+    <div>
       <div className='title'> {props.title} </div>
         <a className='file'> Select File
           <input type='file' name='file' onChange={onFileChange} />
         </a>
         {file && 
-          <p className='fileDescription'> 
+          <p> 
             file: {file.name}; 
             size: {Math.round(Number(file.size)/1000)} KB; 
             type:{file?.type || 'Unknown'} 
           </p>
         }
-      <div className='tip'> ❕{props.tip} </div>
     </div>
   );
 }

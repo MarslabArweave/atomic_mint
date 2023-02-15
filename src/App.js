@@ -3,8 +3,8 @@ import './App.css';
 
 import React from 'react';
 import { Routes, Route, useNavigate } from 'react-router-dom';
-import { MintToken } from './components/mintToken';
-import { MintNFT } from './components/mintNFT';
+import { MintToken } from './components/MintToken';
+import { MintNFT } from './components/MintNFT';
 import { Navigation } from './components/Navigation';
 import { Button } from 'rsuite';
 
