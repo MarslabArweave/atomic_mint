@@ -57,15 +57,19 @@ export async function deployAtomicNFT(form, collectibleAddress) {
   if (!minARBalanceCheck('0.01')) {
     return {status: false, result: 'You should have at least 0.01$AR in wallet to pay for network fee!'};
   }
+  const supply = parseInt(form.supply);
+  if (isNaN(supply) || !isFinite(supply) || supply <= 0) {
+    return {status: false, result: 'MaxSupply should be a positive integer!'};
+  }
 
   const initialState = {
     description: form.description,
     symbol: form.symbol,
     name: form.name,
     decimals: 0,
-    totalSupply: form.supply,
+    totalSupply: supply,
     balances: {
-      [walletAddress]: form.supply,
+      [walletAddress]: supply,
     },
     allowances: {}
   };
