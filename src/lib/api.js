@@ -27,7 +27,7 @@ export async function deployToken(initialState) {
   if (!isConnectWallet) {
     return {status: false, result: 'Please connect your wallet first!'};
   }
-  if (!minARBalanceCheck('0.01')) {
+  if (await minARBalanceCheck('0.01') === false) {
     return {status: false, result: 'You should have at least 0.01$AR in your wallet to pay for network fee!'};
   }
 
@@ -54,7 +54,7 @@ export async function deployAtomicNFT(form, collectibleAddress) {
   if (!isConnectWallet) {
     return {status: false, result: 'Please connect your wallet first!'};
   }
-  if (!minARBalanceCheck('0.01')) {
+  if (await minARBalanceCheck('0.01') === false) {
     return {status: false, result: 'You should have at least 0.01$AR in wallet to pay for network fee!'};
   }
   const supply = parseInt(form.supply);
@@ -107,7 +107,7 @@ export async function deployCollectible(form) {
   if (!isConnectWallet) {
     return {status: false, result: 'Please connect your wallet first!'};
   }
-  if (!minARBalanceCheck('0.01')) {
+  if (await minARBalanceCheck('0.01') === false) {
     return {status: false, result: 'You should have at least 0.01$AR in your wallet to pay for network fee!'};
   }
 
