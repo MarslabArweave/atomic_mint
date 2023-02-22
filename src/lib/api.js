@@ -117,7 +117,7 @@ export async function deployCollectible(form) {
     result = (await warp.createContract.deployFromSourceTx({
       wallet: 'use_wallet',
       srcTxId: collectibleMainnetSrcTx,
-      initState: JSON.stringify({owner: getWalletAddress(), nftSet: [], name: form.name, description: form.description}),
+      initState: JSON.stringify({owner: getWalletAddress(), nftSet: {}, name: form.name, description: form.description}),
     })).contractTxId;
   } catch {
     status = false;
