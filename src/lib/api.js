@@ -11,7 +11,7 @@ LoggerFactory.INST.logLevel('error');
 // addresses
 const wrc20MainnetSrcTx = 'jxB_n6cJo4s-a66oMIGACUjERJXQfc3IoIMV3_QK-1w';
 const atomnftMainnetSrcTx = 'FIQiquxFLCz3uA_XVGp-qHxVw6A9d-FalNZa1Flzqos';
-const collectibleMainnetSrcTx = 'ZvADh0sK2jZEUYxwRMQ8hcCuvRi2meejdzKiBFYisgU';
+const collectibleMainnetSrcTx = 'dTX-LpqPaR-svd-mhTBF2Qbu9xQ-dXT8DuIZsHYTJFI';
 
 // const warp = WarpFactory.forLocal(1984);
 // const warp = WarpFactory.forTestnet();
@@ -103,7 +103,7 @@ export async function deployAtomicNFT(form, collectibleAddress) {
   return {status, result};
 }
 
-export async function deployCollectible(form) {
+export async function deployCollectible(form, attributes) {
   if (!isConnectWallet) {
     return {status: false, result: 'Please connect your wallet first!'};
   }
@@ -117,7 +117,7 @@ export async function deployCollectible(form) {
     result = (await warp.createContract.deployFromSourceTx({
       wallet: 'use_wallet',
       srcTxId: collectibleMainnetSrcTx,
-      initState: JSON.stringify({owner: getWalletAddress(), nftSet: {}, name: form.name, description: form.description}),
+      initState: JSON.stringify({owner: getWalletAddress(), nftSet: {}, name: form.name, description: form.description, attributes: attributes}),
     })).contractTxId;
   } catch {
     status = false;
@@ -127,7 +127,7 @@ export async function deployCollectible(form) {
   return {status, result};
 }
 
-export async function addToCollectible(collectibleAddress, nftAddress) {
+export async function addToCollectible(collectibleAddress, nftAddress, attributes) {
   if (!isConnectWallet) {
     return {status: false, result: 'Please connect your wallet first!'};
   }
@@ -142,7 +142,8 @@ export async function addToCollectible(collectibleAddress, nftAddress) {
     await collectible.writeInteraction({
       function: 'mint',
       params: {
-        nftAddress: nftAddress
+        nftAddress: nftAddress,
+        attributes: attributes
       }
     });
 

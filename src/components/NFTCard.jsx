@@ -1,6 +1,6 @@
 import React from "react";
 import domtoimage from 'dom-to-image';
-import { Panel, Placeholder, Modal, Button, Form, Whisper, Popover, Dropdown } from "rsuite";
+import { Panel, Modal, Button, Form, Whisper, Popover, Dropdown, InputNumber, Toggle, TagPicker, SelectPicker, Input } from "rsuite";
 import { FileUploader } from "./FileUploader/FileUploader";
 import QuestionIcon from '@rsuite/icons/legacy/Question';
 import VideoIcon from '@rsuite/icons/legacy/VideoCamera';
@@ -39,16 +39,12 @@ const containerStyle = {
   alignItems: 'center'
 };
 
+const NumberPicker = React.forwardRef((props, ref) => <InputNumber {...props} onChange={(v, e)=>{props.onChange(Number(v), e)}} ref={ref} />);
+
 export const NFTCard = (props) => {
   const ref = React.useRef();
 
-  const [formValue, setFormValue] = React.useState({
-    'name': '',
-    'symbol': '',
-    'supply': '',
-    'description': '',
-    'asset': '',
-  });
+  const [formValue, setFormValue] = React.useState(props.value);
   const [open, setOpen] = React.useState(false);
   const [previewDom, setPreviewDom] = React.useState(<div style={containerStyle}></div>);
 
@@ -59,6 +55,27 @@ export const NFTCard = (props) => {
   React.useEffect(()=>{
     setOpen(props.showModal);
   }, [props.showModal]);
+
+  React.useEffect(()=>{
+    const newValue = {...props.value};
+    props.attributes.forEach(attr => {
+      if (newValue[`attr_${attr.name}`] === undefined) {
+        newValue[`attr_${attr.name}`] = (()=>{
+          switch (attr.type) {
+            case 'number':
+              return 0;
+            case 'string':
+              return '';
+            case 'enum':
+              return [];
+            case 'boolean':
+              return false;
+          }
+        })();
+      }
+    });
+    setFormValue(newValue);
+  }, [props.value, props.attributes]);
 
   React.useEffect(()=>{
     setPreview();
@@ -114,6 +131,28 @@ export const NFTCard = (props) => {
     setPreviewDom(<div style={containerStyle}>{htmlToRender}</div>);
   };
 
+  const renderAttributeInput = (attr) => {
+    const renderAcceptor = () => {
+      switch (attr.type) {
+        case 'number':
+          return NumberPicker;
+        case 'enum':
+          return (props)=><SelectPicker block data={attr.enums.map(v=>({label: v, value: v}))} {...props} />
+        case 'boolean':
+          return Toggle;
+        default:
+          break;
+      }
+      return <></>;
+    }
+    return (
+      <Form.Group controlId={`attr_${attr.name}`}>
+        <Form.ControlLabel style={itemTitleStyle}>{attr.name}(Attribute)</Form.ControlLabel>
+        <Form.Control name={`attr_${attr.name}`} accepter={renderAcceptor()} />
+      </Form.Group>
+    );
+  }
+
   return (
     <>
       <Whisper
@@ -163,7 +202,7 @@ export const NFTCard = (props) => {
 
             <Form.Group controlId="supply">
               <Form.ControlLabel style={itemTitleStyle}>Max Supply</Form.ControlLabel>
-              <Form.Control name="supply" />
+              <Form.Control name="supply" accepter={NumberPicker} />
               <Form.HelpText>Maximum number of Atomic-NFT available.</Form.HelpText>
             </Form.Group>
 
@@ -178,6 +217,8 @@ export const NFTCard = (props) => {
               <Form.Control name="asset" accepter={FileUploader} />
               <Form.HelpText>Atomic-NFT asset will be stored to Arweave network together with nft contract.</Form.HelpText>
             </Form.Group>
+
+            { props.attributes.map(attr=>renderAttributeInput(attr)) }
 
           </Form>
         </Modal.Body>

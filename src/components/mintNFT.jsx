@@ -8,6 +8,8 @@ import { SubmitButton } from "./SubmitButton/SubmitButton";
 import { add, div } from "../lib/math";
 import copy from 'copy-to-clipboard';
 import CopyIcon from '@rsuite/icons/Copy';
+import AddIcon from '@rsuite/icons/legacy/Plus';
+import { AttrItem } from "./AttributeItem";
 
 const cardStyle = {
   display: 'inline-block',
@@ -30,6 +32,7 @@ export const MintNFT = (props) => {
   const [percent, setPercent] = React.useState(0);
   const [useCollectible, setUseCollectible] = React.useState(true);
   const [collectibleForm, setCollectibleForm] = React.useState({name: '', description: ''});
+  const [attributesForms, setAttributesForms] = React.useState([]);
   const [nftforms, setNftForms] = React.useState([]);
 
   const onDelete = (index) => {
@@ -51,7 +54,13 @@ export const MintNFT = (props) => {
 
   const onClickAdd = () => {
     let newNFTForms = Array.from(nftforms);
-    newNFTForms.push({});
+    newNFTForms.push({
+      'name': '',
+      'symbol': '',
+      'supply': '',
+      'description': '',
+      'asset': '',
+    });
     setNftForms(newNFTForms);
   };
 
@@ -91,7 +100,7 @@ export const MintNFT = (props) => {
         return {status: false, result: `Please fill the form of NFTs first!`};
       }
       for (const key of keys) {
-        if (form[key] === '') {
+        if (form[key] === '' || form[key] === undefined || form[key] === null) {
           return {status: false, result: `The '${key}' of the ${i}th NFT should not be empty!`};
         }
       }
@@ -113,7 +122,7 @@ export const MintNFT = (props) => {
     setPercent(5);
     setProgressStatus('Deploying collectible contract ...');
     if (useCollectible) {
-      const ret = await deployCollectible(collectibleForm);
+      const ret = await deployCollectible(collectibleForm, attributesForms);
       if (ret.status === false) {
         setStatus('fail');
         return ret;
@@ -145,8 +154,26 @@ export const MintNFT = (props) => {
     setPercent(90);
     setProgressStatus('Adding Atomic-NFTs to collectible ...');
     if (useCollectible) {
-      for (const nftAddr of nftAddresses) {
-        const ret = await addToCollectible(collectibleAddress, nftAddr);
+      const attrs = [];
+      if (attributesForms.length !== 0) {
+        for (let i = 0; i < nftforms.length; i ++) {
+          const form = nftforms[i];
+          const keys = Object.keys(form);
+          const attr = {};
+          for (const key of keys) {
+            // if current key belongs to attribute
+            if (key.length >= 5 && key.substring(0, 5) === 'attr_') {
+              const attrName = key.substring(5);
+              attr[attrName] = form[key];
+            } 
+          }
+          attrs.push(attr);
+        }
+      }
+      console.log(attrs);
+      for (var i = 0; i < nftAddresses.length; i ++) {
+        const nftAddr = nftAddresses[i];
+        const ret = await addToCollectible(collectibleAddress, nftAddr, attrs[i]);
         if (ret.status === false) {
           setStatus('fail');
           return ret;
@@ -161,11 +188,67 @@ export const MintNFT = (props) => {
     return {status: true, result: 'Atomic-NFTs are deployed successfully!'};
   };
 
+  const renderAttributeForms = () => {
+    const onAttrChange = (index, form) => {
+      let newAttrForms = Array.from(attributesForms);
+      newAttrForms[index] = form;
+      setAttributesForms(newAttrForms);
+    };
+
+    const onAttrDelete = (index) => {
+      setAttributesForms(attributesForms.filter((_, i)=>i!==index));
+    };
+
+    return (
+      <Form fluid>
+        <Form.Group controlId="attributes">
+          <Form.ControlLabel style={itemTitleStyle}>Attributes</Form.ControlLabel>
+          {
+            attributesForms.map((v, i)=>
+              <div style={{marginTop: '0.5rem'}}>
+                <AttrItem 
+                  index={i} 
+                  value={attributesForms[i]}
+                  onChange={onAttrChange} 
+                  onDelete={onAttrDelete} 
+                />
+              </div>
+            )
+          }
+          <div 
+            style={{
+              display: 'flex', 
+              justifyContent: 'center', 
+              alignItems: 'center', 
+              border: '1px solid', 
+              borderColor: 'white',
+              borderRadius: '10px',
+              height: 40,
+              marginTop: '1rem',
+              cursor: 'pointer'
+            }}
+            onClick={()=>{
+              const newAttrForms = Array.from(attributesForms);
+              newAttrForms.push({type: 'enum', name: '', enums: []});
+              setAttributesForms(newAttrForms);
+              console.log(attributesForms);
+            }}
+          >
+            <AddIcon style={{color: 'white'}} />
+          </div>
+          <Form.HelpText>Set different attributes to your NFT so others are able to filter the items by attributes they like.</Form.HelpText>
+        </Form.Group>
+      </Form>
+    );
+  }
+
   const renderNFTCard = (index) => {
     return (
       <div style={cardStyle}>
         <NFTCard
           index={index}
+          value={nftforms[index]}
+          attributes={ useCollectible ? attributesForms : [] }
           onChange={onChange}
           onDelete={onDelete}
         />
@@ -197,19 +280,23 @@ export const MintNFT = (props) => {
         <br/><br/>
         {
           useCollectible &&
-          <Form onChange={setCollectibleForm} formValue={collectibleForm} fluid>
-            <Form.Group controlId="name">
-              <Form.ControlLabel style={itemTitleStyle}>Collectible Name</Form.ControlLabel>
-              <Form.Control name="name" />
-              <Form.HelpText>Choose a name for your Collectible.</Form.HelpText>
-            </Form.Group>
+          <>
+            <Form onChange={setCollectibleForm} formValue={collectibleForm} fluid>
+              <Form.Group controlId="name">
+                <Form.ControlLabel style={itemTitleStyle}>Collectible Name</Form.ControlLabel>
+                <Form.Control name="name" />
+                <Form.HelpText>Choose a name for your Collectible.</Form.HelpText>
+              </Form.Group>
 
-            <Form.Group controlId="description">
-              <Form.ControlLabel style={itemTitleStyle}>Description</Form.ControlLabel>
-              <Form.Control name="description" />
-              <Form.HelpText>Description to your collectible.</Form.HelpText>
-            </Form.Group>
-          </Form>
+              <Form.Group controlId="description">
+                <Form.ControlLabel style={itemTitleStyle}>Description</Form.ControlLabel>
+                <Form.Control name="description" />
+                <Form.HelpText>Description to your collectible.</Form.HelpText>
+              </Form.Group>
+            </Form>
+            <br />
+            {renderAttributeForms()}
+          </>
         }
       </div>
       {nftforms.map((_, i)=>renderNFTCard(i))}
