@@ -8,6 +8,9 @@ import { MintNFT } from './components/MintNFT';
 import { Navigation } from './components/Navigation';
 import { Button } from 'rsuite';
 
+import mintTokenImg from './mint-token-bg.png';
+import mintNFTImg from './mint-nft-bg.jpeg';
+
 const App = () => {
   const [isWalletConnected, setIsWalletConnected] = React.useState(false);
 
@@ -38,18 +41,27 @@ const Home = (props) => {
   const navigate = useNavigate();
   return (
     <>
-      <Button 
-        style={centerStyle}
-        onClick={async ()=>{navigate(`/token`)}}
-      >
-        Mint WRC-20 Token
-      </Button>
-      <Button 
-        style={centerStyle}
-        onClick={async ()=>{navigate(`/nft`)}}
-      >
-        Mint Atomic-NFT
-      </Button>
+      <div style={{backgroundImage: `url(${mintTokenImg})`, backgroundSize: 'cover', backgroundRepeat: 'no-repeat', padding: '1rem', borderRadius: 15}}>
+        <Button 
+          style={centerStyle}
+          onClick={async ()=>{navigate(`/token`)}}
+          appearance='ghost'
+        >
+          Mint Atomic Token
+        </Button>
+      </div>
+
+      <br />
+
+      <div style={{backgroundImage: `url(${mintNFTImg})`, backgroundSize: 'cover', backgroundRepeat: 'no-repeat', padding: '1rem', borderRadius: 15}}>
+        <Button 
+          style={centerStyle}
+          onClick={async ()=>{navigate(`/nft`)}}
+          appearance='ghost'
+        >
+          Mint Atomic NFT
+        </Button>
+      </div>
     </>
   );
 };

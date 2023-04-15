@@ -13,7 +13,10 @@ export const Navigation = (props) => {
     <div>
       <Navbar appearance='subtle'>
         <Navbar.Brand href="#">
-          <p style={{height: '1.5rem'}}>WeaveMint</p>
+          <p style={{height: '1.5rem'}}>
+            <span style={{color: 'red'}}>Atomic</span>
+            <span style={{color: 'white'}}>Mint</span> 
+          </p>
         </Navbar.Brand>
         <Nav>
           <Nav.Menu title="Menu">

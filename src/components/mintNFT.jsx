@@ -1,6 +1,6 @@
 import React from "react";
 import { Form, Progress, Toggle, Tooltip, Whisper, Modal, Message, Loader, InputGroup, Input } from "rsuite";
-import { addToCollectible, arAdd, arLessThan, deployAtomicNFT, deployCollectible, getBalance, getFeeEstimation, getWalletAddress } from "../lib/api";
+import { addToCollection, arAdd, arLessThan, deployAtomicNFT, deployCollection, getBalance, getFeeEstimation, getWalletAddress } from "../lib/api";
 import { NFTAdd } from "./NFTAdd";
 import { NFTCard } from "./NFTCard";
 import QuestionIcon from '@rsuite/icons/legacy/QuestionCircle2';
@@ -30,8 +30,8 @@ export const MintNFT = (props) => {
   const [networkFee, setNetworkFee] = React.useState('0.00');
   const [estimatingFee, setEstimatingFee] = React.useState(false);
   const [percent, setPercent] = React.useState(0);
-  const [useCollectible, setUseCollectible] = React.useState(true);
-  const [collectibleForm, setCollectibleForm] = React.useState({name: '', description: ''});
+  const [useCollection, setUseCollection] = React.useState(true);
+  const [collectionForm, setCollectionForm] = React.useState({name: '', description: ''});
   const [attributesForms, setAttributesForms] = React.useState([]);
   const [nftforms, setNftForms] = React.useState([]);
 
@@ -87,8 +87,8 @@ export const MintNFT = (props) => {
     }
 
     // check form value validity
-    if (useCollectible && (collectibleForm.name === '' || collectibleForm.description === '')) {
-      return {status: false, result: 'Please fill collectible forms or make toggle off!'};
+    if (useCollection && (collectionForm.name === '' || collectionForm.description === '')) {
+      return {status: false, result: 'Please fill collection forms or make toggle off!'};
     }
     if (nftforms.length === 0) {
       return {status: false, result: 'Please add at least one Atomic-NFT!'};
@@ -117,18 +117,18 @@ export const MintNFT = (props) => {
 
     let newTxIDs = {};
 
-    // deploy collectible contract
-    let collectibleAddress = '';
+    // deploy collection contract
+    let collectionAddress = '';
     setPercent(5);
-    setProgressStatus('Deploying collectible contract ...');
-    if (useCollectible) {
-      const ret = await deployCollectible(collectibleForm, attributesForms);
+    setProgressStatus('Deploying collection contract ...');
+    if (useCollection) {
+      const ret = await deployCollection(collectionForm, attributesForms);
       if (ret.status === false) {
         setStatus('fail');
         return ret;
       }
-      collectibleAddress = ret.result;
-      newTxIDs.collectible = collectibleAddress;
+      collectionAddress = ret.result;
+      newTxIDs.collection = collectionAddress;
       setTxIDs(newTxIDs);
     }
 
@@ -138,7 +138,7 @@ export const MintNFT = (props) => {
     setPercent(10);
     setProgressStatus('Deploying Atomic-NFTs ...');
     for (const form of nftforms) {
-      const ret = await deployAtomicNFT(form, collectibleAddress);
+      const ret = await deployAtomicNFT(form, collectionAddress);
       if (ret.status === false) {
         setStatus('fail');
         return ret;
@@ -150,10 +150,10 @@ export const MintNFT = (props) => {
       setTxIDs(tempTxIDs);
     }
 
-    // add nft addresses to collectible
+    // add nft addresses to collection
     setPercent(90);
-    setProgressStatus('Adding Atomic-NFTs to collectible ...');
-    if (useCollectible) {
+    setProgressStatus('Adding Atomic-NFTs to collection ...');
+    if (useCollection) {
       const attrs = [];
       if (attributesForms.length !== 0) {
         for (let i = 0; i < nftforms.length; i ++) {
@@ -173,7 +173,7 @@ export const MintNFT = (props) => {
       console.log(attrs);
       for (var i = 0; i < nftAddresses.length; i ++) {
         const nftAddr = nftAddresses[i];
-        const ret = await addToCollectible(collectibleAddress, nftAddr, attrs[i]);
+        const ret = await addToCollection(collectionAddress, nftAddr, attrs[i]);
         if (ret.status === false) {
           setStatus('fail');
           return ret;
@@ -248,7 +248,7 @@ export const MintNFT = (props) => {
         <NFTCard
           index={index}
           value={nftforms[index]}
-          attributes={ useCollectible ? attributesForms : [] }
+          attributes={ useCollection ? attributesForms : [] }
           onChange={onChange}
           onDelete={onDelete}
         />
@@ -270,28 +270,28 @@ export const MintNFT = (props) => {
   return (
     <>
       <div style={{margin: '1rem'}}>
-        <label style={{color: 'white'}}>Wrapped into Collectible:</label>
+        <label style={{color: 'white'}}>Wrapped into Collection:</label>
         &nbsp;&nbsp;&nbsp;
-        <Toggle defaultChecked onChange={setUseCollectible} />
+        <Toggle defaultChecked onChange={setUseCollection} />
         &nbsp;&nbsp;&nbsp;
-        <Whisper speaker={<Tooltip> Collectible is a box containing various NFTs. If you want to mint a set of NFTs, you can use collectible to wrap them.</Tooltip>}>
+        <Whisper speaker={<Tooltip> Collection is a box containing various NFTs. If you want to mint a set of NFTs, you can use collection to wrap them.</Tooltip>}>
           <QuestionIcon />
         </Whisper>
         <br/><br/>
         {
-          useCollectible &&
+          useCollection &&
           <>
-            <Form onChange={setCollectibleForm} formValue={collectibleForm} fluid>
+            <Form onChange={setCollectionForm} formValue={collectionForm} fluid>
               <Form.Group controlId="name">
-                <Form.ControlLabel style={itemTitleStyle}>Collectible Name</Form.ControlLabel>
+                <Form.ControlLabel style={itemTitleStyle}>Collection Name</Form.ControlLabel>
                 <Form.Control name="name" />
-                <Form.HelpText>Choose a name for your Collectible.</Form.HelpText>
+                <Form.HelpText>Choose a name for your Collection.</Form.HelpText>
               </Form.Group>
 
               <Form.Group controlId="description">
                 <Form.ControlLabel style={itemTitleStyle}>Description</Form.ControlLabel>
                 <Form.Control name="description" />
-                <Form.HelpText>Description to your collectible.</Form.HelpText>
+                <Form.HelpText>Description to your collection.</Form.HelpText>
               </Form.Group>
             </Form>
             <br />
@@ -335,10 +335,8 @@ export const MintNFT = (props) => {
           {
             txIDs !== {} && 
             <Message showIcon type="success" header='Addresses'>
-              <p>Take a unique name for your collectible or NFTs on Arweave via <a href='https://arweave.net/wbo15PDbhXjpGMSGV8wh-XhlfFgjXKOZPw-wvEE24xI'>Polaris</a> name service.</p>
-              <br/>
-              Collectible:<br/>
-              {txIDs.collectible && renderAddress(txIDs.collectible)}
+              Collection:<br/>
+              {txIDs.collection && renderAddress(txIDs.collection)}
               Atomic-NFTs:<br/>
               {txIDs.nfts && txIDs.nfts.map(v=>renderAddress(v))}
             </Message>

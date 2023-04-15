@@ -134,7 +134,6 @@ export const MintToken = (props) => {
                 <CopyIcon onClick={()=>{copy(tokenAddress)}} />
               </InputGroup.Button>
             </InputGroup>
-            <p>Take a unique name for your token on Arweave via <a href='https://arweave.net/wbo15PDbhXjpGMSGV8wh-XhlfFgjXKOZPw-wvEE24xI'>Polaris</a> name service.</p>
           </Message>
         }
 
