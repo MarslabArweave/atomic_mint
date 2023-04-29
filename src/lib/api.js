@@ -83,10 +83,16 @@ export async function deployAtomicNFT(form, collectionAddress) {
       srcTxId: atomnftMainnetSrcTx,
       initState: JSON.stringify(initialState),
       data: { 'Content-Type': form.asset.type, body: form.asset.data },
-      tags: [{
-        name: 'collection',
-        value: collectionAddress
-      }]
+      tags: [
+        {
+          name: 'collection',
+          value: collectionAddress
+        },
+        {
+          name: 'Indexed-By',
+          value: 'atomic-asset'
+        }
+      ]
     }, true);
     if (isWellFormattedAddress(tx.contractTxId)) {
       status = true;
