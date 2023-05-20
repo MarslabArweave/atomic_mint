@@ -9,12 +9,10 @@ import { intelliContract } from './intelliContract';
 LoggerFactory.INST.logLevel('error');
 
 // addresses
-const wrc20MainnetSrcTx = 'jxB_n6cJo4s-a66oMIGACUjERJXQfc3IoIMV3_QK-1w';
-const atomnftMainnetSrcTx = 'FIQiquxFLCz3uA_XVGp-qHxVw6A9d-FalNZa1Flzqos';
+const atomicAssetSrcTx = 'I6GgRnDWR34PQI_wiN6vYYxrgnbeetgkbyI0Zo0S21Q';
 const collectionMainnetSrcTx = 'cqIysttz_FXK6In_kP_LhwXOgTYN6zm5WoRTYoVKw4c';
 
 // const warp = WarpFactory.forLocal(1984);
-// const warp = WarpFactory.forTestnet();
 const warp = WarpFactory.forMainnet({
   dbLocation: './cache/warp'+(new Date().getTime()).toString(), 
   inMemory: false
@@ -36,7 +34,7 @@ export async function deployToken(initialState) {
   try {
     result = (await warp.createContract.deployFromSourceTx({
       wallet: 'use_wallet',
-      srcTxId: wrc20MainnetSrcTx,
+      srcTxId: atomicAssetSrcTx,
       initState: JSON.stringify(initialState),
     }, true));
   } catch {
@@ -48,6 +46,31 @@ export async function deployToken(initialState) {
   }
 
   return {status: status, result: 'Token contract deployed!', txID: `${result.contractTxId}`};
+}
+
+export async function uploadLogo(logo) {
+  if (!isConnectWallet) {
+    return {status: false, result: 'Please connect your wallet first!'};
+  }
+  console.log('upload logo: ', logo);
+  const imgStream = await (await fetch(URL.createObjectURL(logo))).arrayBuffer();
+  const imgType = logo.type;
+
+  let tx = await arweave.createTransaction(
+    { data: imgStream }, 
+    'use_wallet'
+  );
+  tx.addTag('Content-Type', imgType);
+
+  await arweave.transactions.sign(tx, 'use_wallet');
+
+  let uploader = await arweave.transactions.getUploader(tx);
+  while (!uploader.isComplete) {
+    await uploader.uploadChunk();
+    console.log(`${uploader.pctComplete}% complete, ${uploader.uploadedChunks}/${uploader.totalChunks}`);
+  }
+
+  return tx.id;
 }
 
 export async function deployAtomicNFT(form, collectionAddress) {
@@ -67,6 +90,7 @@ export async function deployAtomicNFT(form, collectionAddress) {
     symbol: form.symbol,
     name: form.name,
     decimals: 0,
+    collection: collectionAddress,
     totalSupply: supply,
     balances: {
       [walletAddress]: supply,
@@ -80,14 +104,10 @@ export async function deployAtomicNFT(form, collectionAddress) {
   try {
     const tx = await warp.createContract.deployFromSourceTx({
       wallet: 'use_wallet',
-      srcTxId: atomnftMainnetSrcTx,
+      srcTxId: atomicAssetSrcTx,
       initState: JSON.stringify(initialState),
       data: { 'Content-Type': form.asset.type, body: form.asset.data },
       tags: [
-        {
-          name: 'collection',
-          value: collectionAddress
-        },
         {
           name: 'Indexed-By',
           value: 'atomic-asset'

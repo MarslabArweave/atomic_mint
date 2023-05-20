@@ -1,15 +1,10 @@
 import React from "react";
 import { Form, Input, InputGroup, Message } from "rsuite";
-import { connectWallet, deployToken, getWalletAddress } from "../lib/api";
+import { connectWallet, deployToken, getWalletAddress, uploadLogo } from "../lib/api";
 import { SubmitButton } from "./SubmitButton/SubmitButton";
 import copy from 'copy-to-clipboard';
 import CopyIcon from '@rsuite/icons/Copy';
-
-const aboudTokenStyle = {
-  marginTop: '0.5rem',
-  marginBottom: '0.5rem',
-  fontSize: '1rem',
-};
+import { FileUploader } from "./FileUploader/FileUploader";
 
 const centerStyle = {
   justifyContent: 'center', 
@@ -26,6 +21,8 @@ export const MintToken = (props) => {
 
   const [tokenName, setTokenName] = React.useState("");
   const [symbol, setSymbol] = React.useState("");
+  const [description, setDescription] = React.useState("");
+  const [logo, setLogo] = React.useState();
   const [maxSupply, setMaxSupply] = React.useState("");
   const [decimals, setDecimals] = React.useState("");
   const [disabled, setDisabled] = React.useState(true);
@@ -49,6 +46,8 @@ export const MintToken = (props) => {
     setTokenName(formValue['name']);
     setSymbol(formValue['symbol']);
     setMaxSupply(formValue['supply']);
+    setDescription(formValue['description']);
+    setLogo(formValue['logo']);
     setDecimals(formValue['decimals']);
   };
 
@@ -68,12 +67,16 @@ export const MintToken = (props) => {
     if (numSupply * Math.pow(10, numDecimals) > 0xFFFFFFFFFFFFFFFF) {
       return {status: false, result: 'Precision overflows. Please reduce MaxSupply or Decimals!'};
     }
+
+    const logoTx = await uploadLogo(logo);
     
     initialState = {
       decimals: numDecimals,
       totalSupply: numSupply * Math.pow(10, numDecimals),
       symbol: symbol,
+      logo: logoTx,
       name: tokenName,
+      description: description,
       owner: walletAddr,
       balances: {
         [walletAddr]: numSupply * Math.pow(10, numDecimals),
@@ -93,16 +96,16 @@ export const MintToken = (props) => {
 
   return (
     <>
-      <Message showIcon type="info" header="About WRC-20 Token"  style={centerStyle}>
+      {/* <Message showIcon type="info" header="About Atomic Token"  style={centerStyle}>
       <div style={aboudTokenStyle}><a href='https://github.com/warp-contracts/wrc'>WRC-20</a> is a token standard recommended by the Warp Contract team. It is written in RUST language and has undergone a complete security audit.</div>
       <div style={aboudTokenStyle}>By using WeaveMint, you can easily deploy standard WRC-20 token on Arweave network with several clicks.</div>
       <div style={aboudTokenStyle}>No coding skills are required.</div>
       <div style={aboudTokenStyle}>After deployed, you can find your token info and make transactions <a href='https://arweave.net/G2t61jWAFfoTjaybLtjouWEM9IFZoNdxJMX2GzIXUSA'><b>HERE</b></a>.</div>
-      </Message>
+      </Message> */}
 
       <Form style={centerStyle} onChange={formOnchange} fluid>
         <Form.Group controlId="name">
-          <Form.ControlLabel style={itemTitleStyle}>TokenName</Form.ControlLabel>
+          <Form.ControlLabel style={itemTitleStyle}>Name</Form.ControlLabel>
           <Form.Control name="name" />
           <Form.HelpText>Choose a name for your token.</Form.HelpText>
         </Form.Group>
@@ -113,10 +116,22 @@ export const MintToken = (props) => {
           <Form.HelpText>Choose a symbol for your token (usually 2-5 chars).</Form.HelpText>
         </Form.Group>
 
+        <Form.Group controlId="description">
+          <Form.ControlLabel style={itemTitleStyle}>Description</Form.ControlLabel>
+          <Form.Control name="description" />
+          <Form.HelpText>Description to your token.</Form.HelpText>
+        </Form.Group>
+
         <Form.Group controlId="supply">
           <Form.ControlLabel style={itemTitleStyle}>Max Supply</Form.ControlLabel>
           <Form.Control name="supply" />
           <Form.HelpText>Maximum number of tokens available.</Form.HelpText>
+        </Form.Group>
+
+        <Form.Group controlId="logo">
+          <Form.ControlLabel style={itemTitleStyle}>LOGO</Form.ControlLabel>
+          <Form.Control name="logo" accepter={FileUploader} />
+          
         </Form.Group>
 
         <Form.Group controlId="decimals">
