@@ -36,6 +36,12 @@ export async function deployToken(initialState) {
       wallet: 'use_wallet',
       srcTxId: atomicAssetSrcTx,
       initState: JSON.stringify(initialState),
+      tags: [
+        {
+          name: 'Indexed-By',
+          value: 'wrc-20'
+        }
+      ]
     }, true));
   } catch {
     status = false;
@@ -110,7 +116,7 @@ export async function deployAtomicNFT(form, collectionAddress) {
       tags: [
         {
           name: 'Indexed-By',
-          value: 'atomic-asset'
+          value: 'wrc-1155'
         }
       ]
     }, true);
