@@ -39,10 +39,10 @@ export async function deployToken(initialState) {
       tags: [
         {
           name: 'Indexed-By',
-          value: 'wrc-20'
+          value: 'atomic-token'
         }
       ]
-    }, true));
+    }));
   } catch {
     status = false;
     result = 'Fail to deploy contract!';
@@ -91,6 +91,18 @@ export async function deployAtomicNFT(form, collectionAddress) {
     return {status: false, result: 'MaxSupply should be a positive integer!'};
   }
 
+  const uploadRet = await uploadImage(form.asset);
+  if (uploadRet.status === false) {
+    return uploadRet;
+  }
+  const assetTx = uploadRet.result;
+  const asset = JSON.stringify({
+    version: 1,
+    type: 'image',
+    preview: assetTx,
+    asset: assetTx
+  });
+
   const initialState = {
     description: form.description,
     symbol: form.symbol,
@@ -112,14 +124,14 @@ export async function deployAtomicNFT(form, collectionAddress) {
       wallet: 'use_wallet',
       srcTxId: atomicAssetSrcTx,
       initState: JSON.stringify(initialState),
-      data: { 'Content-Type': form.asset.type, body: form.asset.data },
+      data: { 'Content-Type': 'text/json', 'body': asset },
       tags: [
         {
           name: 'Indexed-By',
-          value: 'wrc-1155'
+          value: 'atomic-nft'
         }
       ]
-    }, true);
+    });
     if (isWellFormattedAddress(tx.contractTxId)) {
       status = true;
       result = tx.contractTxId;
@@ -299,4 +311,28 @@ export async function checkConfirmation(txID) {
   }
 
   return {status: true, result: 'Confirmed by network!'};
+}
+
+export async function uploadImage(imgFile) {
+  if (!isConnectWallet) {
+    return {status: false, result: 'Please connect your wallet first!'};
+  }
+  const imgStream = await (await fetch(URL.createObjectURL(imgFile))).arrayBuffer();
+  const imgType = imgFile.type;
+
+  let tx = await arweave.createTransaction(
+    { data: imgStream }, 
+    'use_wallet'
+  );
+  tx.addTag('Content-Type', imgType);
+
+  await arweave.transactions.sign(tx, 'use_wallet');
+
+  let uploader = await arweave.transactions.getUploader(tx);
+  while (!uploader.isComplete) {
+    await uploader.uploadChunk();
+    console.log(`${uploader.pctComplete}% complete, ${uploader.uploadedChunks}/${uploader.totalChunks}`);
+  }
+
+  return {status: true, result: tx.id};
 }

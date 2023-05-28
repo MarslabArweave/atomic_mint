@@ -25,7 +25,7 @@ export const FileUploader = (props) => {
     <div>
       <div className='title'> {props.title} </div>
         <a className='file'> Select File
-          <input type='file' name='file' onChange={onFileChange} />
+          <input type='file' name='file' accept='image/*' onChange={onFileChange} />
         </a>
         {file && 
           <p> 
